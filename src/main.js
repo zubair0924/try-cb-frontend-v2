@@ -13,6 +13,6 @@ new Vue({
 
 export const config = new Vue({
   data: {
-    baseURL: 'http://:8080/api/'
+    baseURL: '/api/'
   }
 })
