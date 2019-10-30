@@ -143,7 +143,10 @@ function searchFlights(from, to, leave, rturn, vm){
   if(!leave) return
   axios.get(config.baseURL + `flightPaths/${ from }/${ to }?leave=` + US_date(leave))
     .then(response => {
-      out_results.push(...response.data.data)
+      // Add the date to all the flights
+      let flights = response.data.data
+      flights.forEach((v,i,l) => l[i].date = US_date(leave))
+      out_results.push(...flights)
       // Emit an event to log the request's context to the context component
       vm.$emit('logCtx',["Queried for outbound flights", ...response.data.context])
     })
@@ -151,7 +154,9 @@ function searchFlights(from, to, leave, rturn, vm){
   if(!rturn) return
   axios.get(config.baseURL + `flightPaths/${ to }/${ from }?leave=` + US_date(rturn))
     .then(response => {
-      in_results.push(...response.data.data)
+      let flights = response.data.data
+      flights.forEach((v,i,l) => l[i].date = US_date(rturn))
+      in_results.push(...flights)
       // Emit an event to log the request's context to the context component
       vm.$emit('logCtx', ["Queried for inbound flights", ...response.data.context])
     })
