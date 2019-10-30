@@ -5,7 +5,7 @@ BASE_URL = "http://localhost:8080/api/"
 class TestTravelSample(unittest.TestCase):
     def setUp(self):
         self.testUser = "test::" + str(time.time())
-        password = "pasword" + str(random.randint(100,999))
+        password = "password" + str(random.randint(100,999))
         h = hashlib.md5()
         h.update(bytes(password, 'latin1'))
         self.pw_hash = h.hexdigest();
