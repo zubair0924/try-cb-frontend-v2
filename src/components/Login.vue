@@ -89,7 +89,7 @@ export default {
           this.$emit('logCtx',["Authenticated with server; Retrieved token",response.data.context])
         }).catch(error => {
           // User doesn't exist (409?) / auth error (401)
-          vm.error_message = error.response.data.failure || error.message
+          vm.error_message = error.response.error || error.message
         })
       },
 
@@ -107,7 +107,7 @@ export default {
           this.$emit('logCtx', ["Authenticated with server; Assigned token", response.data.context])
         }).catch(error => {
           // User already exists (409)
-          vm.error_message = error.response.data.failure || error.message
+          vm.error_message = error.response.error || error.message
         })
       }
   }

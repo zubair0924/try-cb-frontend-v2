@@ -21,10 +21,10 @@
 					</template>
 					<!-- Embed HTML in the table row for book and cancel buttons -->
 					<template slot="actions" slot-scope="row">
-						<button class="btn btn-primary btn-sm mr-3" @click="buy(row.item, row.index)">
+						<button class="btn btn-primary btn-sm mr-3" @click="buy(row.index)">
 							<strong>Buy</strong>
 						</button>
-						<button class="btn btn-danger btn-sm" @click="cancel(row.item, row.index)">
+						<button class="btn btn-danger btn-sm" @click="cancel(row.index)">
 							<strong>X</strong>
 						</button>
 					</template>
@@ -50,16 +50,15 @@ export default {
   },
   methods: {
     // Removes a flight from the user's basket and adds it to their booked flights 
-    buy: function(item, index){
+    buy: function(index){
       let vm = this
       axios.post(config.baseURL + `user/${ this.$attrs.user.username }/flights`, {
-        flights: [item]
+        flights: [this.$attrs.basket.splice(index, 1)[0]]
       },{
         // JWT token supplied to authorize user
         headers: {'Authorization': "Bearer " + this.$attrs.user.token}
       }).then(response => {
         console.log(response)
-        this.$attrs.basket.pop(index)
         // Emit an event to log the request's context to the context component
         vm.$emit('logCtx',["Purchased item from basket", response.data.context])
       }).catch(error => {

@@ -26,7 +26,7 @@ class TestTravelSample(unittest.TestCase):
             'password': self.pw_hash
         })
         
-        self.assertEqual(response.status_code, 200, "Signup request failed")
+        self.assertTrue(response.status_code // 100 == 2, "Signup request failed")
         self.assertTrue('data' in response.json() and 'token' in response.json()['data'])
         self.assertIsNotNone(response.json()['data']['token'], "Token was not returned")
 
@@ -53,53 +53,39 @@ class TestTravelSample(unittest.TestCase):
 
     def test_airport_text_title(self):
         response = self._searchAirports("Manch")
-        self.assertIn('data', response.json(),
-            "Data attribute is missing from response")
-        self.assertEqual(len(response.json()['data']), 3,
-            "Wrong number of results searching for 'Manch'")
+        self.assertIn('data', response.json(), "Data attribute is missing from response")
+        self.assertEqual(len(response.json()['data']), 3, "Wrong number of results searching for 'Manch'")
     
     def test_airport_text_lower(self):
         response = self._searchAirports("manch")
-        self.assertIn('data', response.json(),
-            "Data attribute is missing from response")
-        self.assertEqual(len(response.json()['data']), 3,
-            "Wrong number of results searching for 'manch'")
+        self.assertIn('data', response.json(), "Data attribute is missing from response")
+        self.assertEqual(len(response.json()['data']), 3, "Wrong number of results searching for 'manch'")
 
     def test_airport_icao_upper(self):
         response = self._searchAirports("EGLL")
-        self.assertIn('data', response.json(),
-            "Data attribute is missing from response")
-        self.assertGreater(len(response.json()['data']), 0,
-            "No results were returned for search 'EGLL'")
+        self.assertIn('data', response.json(), "Data attribute is missing from response")
+        self.assertGreater(len(response.json()['data']), 0, "No results were returned for search 'EGLL'")
         self.assertEqual(response.json()['data'][0]['airportname'], 'Heathrow', 
             "'EGLL' iaco code doesn't return Heathrow as first result")
 
     def test_airport_icao_lower(self):
         response = self._searchAirports("egll")
-        self.assertIn('data', response.json(),
-            "Data attribute is missing from response")
-        self.assertGreater(len(response.json()['data']), 0,
-            "No results were returned for search 'egll'")
+        self.assertIn('data', response.json(), "Data attribute is missing from response")
+        self.assertGreater(len(response.json()['data']), 0, "No results were returned for search 'egll'")
         self.assertEqual(response.json()['data'][0]['airportname'], 'Heathrow', 
             "'egll' iaco code doesn't return Heathrow as first result")
 
     def test_airport_faa_upper(self):
         response = self._searchAirports("MAN")
-        self.assertIn('data', response.json(),
-            "Data attribute is missing from response")
-        self.assertGreater(len(response.json()['data']), 0,
-            "No results were returned for search 'MAN'")
-        self.assertEqual(response.json()['data'][0]['airportname'], 'Manchester',
-            "'MAN' faa code doesn't return manchester as first result")
+        self.assertIn('data', response.json(), "Data attribute is missing from response")
+        self.assertGreater(len(response.json()['data']), 0, "No results were returned for search 'MAN'")
+        self.assertEqual(response.json()['data'][0]['airportname'], 'Manchester', "'MAN' faa code doesn't return manchester as first result")
 
     def test_airport_faa_lower(self):
         response = self._searchAirports("man")
-        self.assertIn('data', response.json(),
-            "Data attribute is missing from response")
-        self.assertGreater(len(response.json()['data']), 0,
-            "No results were returned for search 'man'")
-        self.assertEqual(response.json()['data'][0]['airportname'], 'Manchester',
-            "'man' faa code doesn't return manchester as first result")
+        self.assertIn('data', response.json(), "Data attribute is missing from response")
+        self.assertGreater(len(response.json()['data']), 0, "No results were returned for search 'man'")
+        self.assertEqual(response.json()['data'][0]['airportname'], 'Manchester', "'man' faa code doesn't return manchester as first result")
 
     def _searchFlights(self, src, dst, date):
         return requests.get(BASE_URL + "flightPaths/{}/{}?leave={}".format(src, dst, date))
@@ -108,8 +94,7 @@ class TestTravelSample(unittest.TestCase):
         response = self._searchFlights("Manchester","Heathrow","08/08/2020")
         self.assertEqual(response.status_code, 200, "Flights search failed")
         flights = response.json()['data']
-        self.assertGreater(len(flights), 0,
-            "No flights were returned for route MAN -> LHR")
+        self.assertGreater(len(flights), 0, "No flights were returned for route MAN -> LHR")
         # TODO: add more assertions
 
 CONSISTENT_FIELDS = ['name','flight','sourceairport','destinationairport','price']
@@ -166,25 +151,21 @@ class TestTravelSampleHotels(unittest.TestCase):
         response = requests.get(BASE_URL + "hotel/*/London/")
         self.assertEqual(response.status_code, 200, "Hotel Search Failed")
         hotels = response.json()["data"]
-        self.assertTrue(all(self._checkLoc(hotel, "london") for hotel in hotels),
-            "Not all results matched location query")
+        self.assertTrue(all(self._checkLoc(hotel, "london") for hotel in hotels), "Not all results matched location query")
 
     def test_search_term(self):
         response = requests.get(BASE_URL + "hotel/Spacious/*/")
         self.assertEqual(response.status_code, 200, "Hotel Search Failed")
         hotels = response.json()["data"]
-        self.assertTrue(all(self._checkTerm(hotel, "spacious") for hotel in hotels),
-            "Not all results matched search term query")
+        self.assertTrue(all(self._checkTerm(hotel, "spacious") for hotel in hotels), "Not all results matched search term query")
 
 
     def test_both(self):
         response = requests.get(BASE_URL + "hotel/Spacious/London/")
         self.assertEqual(response.status_code, 200, "Hotel Search Failed")
         hotels = response.json()["data"]
-        self.assertTrue(all(self._checkLoc(hotel, "london") for hotel in hotels),
-            "Not all results matched location query")
-        self.assertTrue(all(self._checkTerm(hotel, "spacious") for hotel in hotels),
-            "Not all results matched search term query")
+        self.assertTrue(all(self._checkLoc(hotel, "london") for hotel in hotels), "Not all results matched location query")
+        self.assertTrue(all(self._checkTerm(hotel, "spacious") for hotel in hotels), "Not all results matched search term query")
     
     def test_neither(self):
         response = requests.get(BASE_URL + "hotel/*/*/")

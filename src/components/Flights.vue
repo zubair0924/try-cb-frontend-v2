@@ -11,7 +11,7 @@
         <datalist id="from_airports">
           <option v-for="(airport, index) in from_suggest" :key="index" :value="airport">
             <!-- Force a match for 3 or 4 letter searches - these are airport codes not text matches -->
-            {{ from_airport.length == 3 || from_airport.length == 4 ? from_airport.toUpperCase() : '' }}
+            {{ isAirportCode(from_airport) ? from_airport.toUpperCase() : '' }}
           </option>
         </datalist>
       </div>
@@ -25,7 +25,7 @@
         <datalist id="to_airports">
           <option v-for="(airport, index) in to_suggest" :key="index" :value="airport">
             <!-- Force a match for 3 or 4 letter searches - these are airport codes not text matches -->
-            {{ to_airport.length == 3 || to_airport.length == 4 ? to_airport.toUpperCase() : '' }}
+            {{ isAirportCode(to_airport) ? to_airport.toUpperCase() : '' }}
           </option>
         </datalist>
       </div>
@@ -205,6 +205,10 @@ export default {
     },
     isInBasket: function(classRef) {
       return this.booked.indexOf(classRef) > -1
+    },
+    isAirportCode: function(term) {
+      // Checks only format, not if a code has an associated airport
+      return (term.toLowerCase() == term || term.toUpperCase() == term) && (term.length == 3 || term.length == 4)
     }
   }
 }
