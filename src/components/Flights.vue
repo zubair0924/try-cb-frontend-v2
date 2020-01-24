@@ -62,11 +62,11 @@
     <h3>Outbound Flights</h3>
     <b-table class="mt-3" :items="out_results" :fields="fields">
       <!-- Composite field to show flightpath as one item -->
-      <template slot="flightpath" slot-scope="data">
+      <template v-slot:cell(flightpath)="data">
         {{data.item.sourceairport}} -> {{data.item.destinationairport}}
       </template>
       <!-- Embed HTML in the table row for book buttons -->
-      <template slot="actions" slot-scope="row">
+      <template v-slot:cell(actions)="row">
         <button class="btn btn-primary btn-sm mr-3"
                 @click="addToBasket(row.index, out_results, 'outBtn-' + row.index)"
                 :disabled="!$attrs.user.token || isInBasket('outBtn-' + row.index)">
@@ -78,11 +78,11 @@
     <h3>Returning Flights</h3>
     <b-table class="mt-3" :items="in_results" :fields="fields">
       <!-- Composite field to show flightpath as one item -->
-      <template slot="flightpath" slot-scope="data">
+      <template v-slot:cell(flightpath)="data">
         {{data.item.sourceairport}} -> {{data.item.destinationairport}}
       </template>
       <!-- Embed HTML in the table row for book buttons -->
-      <template slot="actions" slot-scope="row">
+      <template v-slot:cell(actions)="row">
         <button class="btn btn-primary btn-sm mr-3"
                 @click="addToBasket(row.index, in_results, 'rtnBtn-' + row.index)"
                 :disabled="!$attrs.user.token || isInBasket('rtnBtn-' + row.index)">

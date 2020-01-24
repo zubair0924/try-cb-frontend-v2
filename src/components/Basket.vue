@@ -16,11 +16,11 @@
         <!-- Results table generated from basket passed in from parent component -->
 				<b-table class="mt-3" :items="this.$attrs.basket" :fields="fields">
 					<!-- Composite field to show flightpath as one item -->
-					<template slot="flightpath" slot-scope="data">
+					<template v-slot:cell(flightpath)="data">
 						{{data.item.sourceairport}} -> {{data.item.destinationairport}}
 					</template>
 					<!-- Embed HTML in the table row for book and cancel buttons -->
-					<template slot="actions" slot-scope="row">
+					<template v-slot:cell(actions)="row">
 						<button class="btn btn-primary btn-sm mr-3" @click="buy(row.index)">
 							<strong>Buy</strong>
 						</button>
