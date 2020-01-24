@@ -11,7 +11,7 @@
         <!-- Results table, generated from :items data -->
         <b-table class="mt-3" :items="booked" :fields="fields" @update="update">
           <!-- Composite field to show flightpath as one item -->
-          <template slot="flightpath" slot-scope="data">
+          <template v-slot:cell(flightpath)="data">
               {{data.item.sourceairport}} -> {{data.item.destinationairport}}
           </template>
         </b-table>
