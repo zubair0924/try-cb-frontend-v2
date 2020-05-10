@@ -32,10 +32,9 @@
       </div>
       <!-- Info column -->
       <div class="col-sm">
-        <h1>CBTravel <img src="assets/CBTravel.LOGO.png" alt="CBTravel Logo"></h1>
-        <p>This is a sample app to demonstrate some of the things Couchbase can do. Create an account, book flights and search hotels while the app displays what's going on behind the scenes.</p>
-        <p>You can find documentation for this app <a href="https://docs.couchbase.com/server/4.5/travel-app/travel-app-walkthough.html" target="_blank">here</a>, and docs for each SDK backend below:</p>
-
+        <h1><img src="assets/CBTravel.LOGO.png" alt="CBTravel Logo"></h1>
+        <p> Sign up for an account, make flight reservations, view reservations including those made through the corresponding mobile apps and do a Full-text search on hotels </p>
+ 
         <table class="table">
           <tr>
             <td class="text-center"><a href="https://docs.couchbase.com/java-sdk/current/sample-app-backend.html" target="_blank">Java</a></td>
