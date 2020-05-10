@@ -78,7 +78,7 @@ export default {
         let vm = this // Store a reference to the Vue object for use inside callbacks
         axios.post(config.baseURL + "user/login", {
           user: this.username,
-          password: md5(this.password)
+          password: md5(this.password),
           rawpassword: this.password
         }).then(response => {
           // Emit an event so the parent component can log the user in for the whole app
