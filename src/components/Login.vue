@@ -79,6 +79,7 @@ export default {
         axios.post(config.baseURL + "user/login", {
           user: this.username,
           password: md5(this.password)
+          rawpassword: this.password
         }).then(response => {
           // Emit an event so the parent component can log the user in for the whole app
           this.$emit('login',{
