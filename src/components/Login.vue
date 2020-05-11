@@ -32,9 +32,9 @@
       </div>
       <!-- Info column -->
       <div class="col-sm">
-        <h1><img src="assets/CBTravel.LOGO.png" alt="CBTravel Logo"></h1>
+        <!-- <h1><img src="assets/CBTravel.LOGO.png" alt="CBTravel Logo"></h1> -->
         <p> Sign up for an account, make flight reservations, view reservations including those made through the corresponding mobile apps and do a Full-text search on hotels </p>
- 
+        <!--
         <table class="table">
           <tr>
             <td class="text-center"><a href="https://docs.couchbase.com/java-sdk/current/sample-app-backend.html" target="_blank">Java</a></td>
@@ -47,6 +47,7 @@
             <td class="text-center"><a href="https://docs.couchbase.com/php-sdk/current/sample-app-backend.html" target="_blank">PHP</a></td>
           </tr>
         </table>
+        -->
 
         <!-- <div class="row mt-auto mx-auto text-center h-auto">
           <div class="col">
@@ -77,8 +78,7 @@ export default {
         let vm = this // Store a reference to the Vue object for use inside callbacks
         axios.post(config.baseURL + "user/login", {
           user: this.username,
-          password: md5(this.password),
-          rawpassword: this.password
+          password: md5(this.password)
         }).then(response => {
           // Emit an event so the parent component can log the user in for the whole app
           this.$emit('login',{
@@ -97,7 +97,8 @@ export default {
         let vm = this
         axios.post(config.baseURL + "user/signup", {
           user: this.username,
-          password: md5(this.password)
+          password: md5(this.password),
+          rawpassword: this.password
         }).then(response => {
           vm.$emit('login',{
             token: response.data.data.token,
