@@ -19,7 +19,7 @@
       <div class="col-md mb-3">
         <b-button class="w-100" variant="primary" @click="search">Search</b-button>
 			</div>
-      
+
 		</div>
 
     <div class="row mt-3">
@@ -40,10 +40,10 @@
 
 <script>
 import axios from 'axios'
-import {config} from '../main.js'
 
 export default {
   name: "hotels",
+  inject: ['API'],
   data() {
     return {
       fields: ["address", "name", "description"],
@@ -56,12 +56,12 @@ export default {
     search: async function(){
       let vm = this
       // Search arguments are the user-supplied terms or '*', for match anything
-      axios.get(config.baseURL + `hotel/${ this.desc || '*' }/${ this.location || '*' }/`)
+      axios.get(this.API.shared(`hotels/${ this.desc || '*' }/${ this.location || '*' }/`))
         .then(response => {
           vm.hotels.length = 0
           vm.hotels.push(...response.data.data)
           // Emit an event to log the request's context to the context component
-          vm.$emit('logCtx',["Searched for hotels matching " + 
+          vm.$emit('logCtx',["Searched for hotels matching " +
                               (vm.location ? vm.location : '') +
                               (vm.location && vm.desc ? ' and ' : '') +
                               (vm.desc ? vm.desc : ''),

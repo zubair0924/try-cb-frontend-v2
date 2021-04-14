@@ -37,10 +37,10 @@
 
 <script>
 import axios from 'axios'
-import {config} from '../main.js'
 
 export default {
   name: "basket",
+  inject: ['API'],
   data() {
     return {
       // The fields we want to display in the basket table
@@ -49,10 +49,10 @@ export default {
     }
   },
   methods: {
-    // Removes a flight from the user's basket and adds it to their booked flights 
+    // Removes a flight from the user's basket and adds it to their booked flights
     buy: function(index){
       let vm = this
-      axios.post(config.baseURL + `user/${ this.$attrs.user.username }/flights`, {
+      axios.put(this.API.tenanted(`user/${ this.$attrs.user.username }/flights`), {
         flights: [this.$attrs.basket.splice(index, 1)[0]]
       },{
         // JWT token supplied to authorize user

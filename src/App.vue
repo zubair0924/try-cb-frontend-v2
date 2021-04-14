@@ -1,5 +1,6 @@
 <template>
   <div id="app container">
+
     <!-- Context Component displays logs for all the database actions performed -->
     <Context ref="ctx"/>
     <!-- Tab for each section of the app.
@@ -9,7 +10,7 @@
     <div class="container">
       <b-tabs  v-model="tabIndex">
 
-        <b-tab :title="firstTab" @click="logout"> 
+        <b-tab :title="firstTab" @click="logout">
           <Login v-on:login="login" v-on:logCtx="logCtx"/>
         </b-tab>
 
@@ -41,8 +42,16 @@
   import Basket  from './components/Basket.vue'
   import Booked  from './components/Booked.vue'
   import Hotels  from './components/Hotels.vue'
-  export default {
+
+export default {
     name: 'app',
+    head: function () {
+      return {
+        link: [
+          { rel: 'stylesheet', href: this.tenantInfo.style }
+        ]
+      }
+    },
     components: {
       Context,
       Login,
@@ -50,6 +59,22 @@
       Basket,
       Booked,
       Hotels
+    },
+    props: {
+      config: Object,
+    },
+    computed: {
+      tenantId() { return this.$route.params.tenant_id },
+      tenantInfo() { return this.config.tenants[this.tenantId] }
+    },
+    provide() {
+      return {
+        tenantInfo: this.tenantInfo,
+        API: {
+          tenanted: (path) => `${ this.config.baseURL }/tenants/${ this.tenantId }/${ path }`,
+          shared:   (path) => `${ this.config.baseURL }/${ path }`
+        }
+      }
     },
     data() {
       return {

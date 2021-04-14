@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  backend:
+    build: "https://github.com/maria-robobug/try-cb-python.git#DOC-8136"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    environment:
+      - ARGS
+    command: $ARGS
+    container_name: try-cb-api
+
+  frontend:
+      build: .
+      ports:
+        - 8081:8081
+      command: bash -c "npm i @vue/cli-service && npm run serve"
+      container_name: try-cb-fe
+
+  db:
+    image: couchbase/server-sandbox:7.0.0-beta
+    ports:
+      - "8091-8095:8091-8095"
+      - "11210:11210"
+    expose: # expose port 8091 to other containers (mainly for backend)
+      - "8091"
+    healthcheck: # checks couchbase server is up
+      test: ["CMD", "curl", "-v", "http://localhost:8091/pools"]
+      interval: 5s
+      retries: 2
+    container_name: couchbase-sandbox-7.0.0-beta

@@ -22,10 +22,11 @@
 
 <script>
 import axios from 'axios'
-import {config} from '../main.js'
+import {config, tenantedAPI} from '../main.js'
 
 export default {
   name: "booked",
+  inject: ['API'],
   data() {
     return {
       // The fields and data for the Booked flights table
@@ -39,7 +40,7 @@ export default {
     update: async function(){
       let vm = this
       console.log("updating...")
-      axios.get(config.baseURL + `user/${ this.$attrs.user.username }/flights`,{
+      axios.get(this.API.tenanted(`user/${ this.$attrs.user.username }/flights`),{
         // JWT token supplied to authorize user
         headers: {'Authorization': "Bearer " + this.$attrs.user.token}
       }).then(response => {

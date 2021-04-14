@@ -32,7 +32,7 @@
       </div>
       <!-- Info column -->
       <div class="col-sm">
-        <h1>CBTravel <img src="assets/CBTravel.LOGO.png" alt="CBTravel Logo"></h1>
+        <h1> {{ this.tenantInfo.name }} <img :src="this.tenantInfo.logo" alt="Logo"></h1>
         <p>This is a sample app to demonstrate some of the things Couchbase can do. Create an account, book flights and search hotels while the app displays what's going on behind the scenes.</p>
         <p>You can find documentation for this app <a href="https://docs.couchbase.com/server/4.5/travel-app/travel-app-walkthough.html" target="_blank">here</a>, and docs for each SDK backend below:</p>
 
@@ -61,11 +61,10 @@
 
 <script>
 import axios from 'axios'
-import { setTimeout } from 'timers';
-import { config } from '../main.js'
 
 export default {
   name: "login",
+  inject: ['API', 'tenantInfo'],
   data() {
     return {
       username: '',
@@ -76,7 +75,7 @@ export default {
   methods: {
       login: function() {
         let vm = this // Store a reference to the Vue object for use inside callbacks
-        axios.post(config.baseURL + "user/login", {
+        axios.post(this.API.tenanted("user/login"), {
           user: this.username,
           password: md5(this.password)
         }).then(response => {
@@ -89,13 +88,13 @@ export default {
           this.$emit('logCtx',["Authenticated with server; Retrieved token",response.data.context])
         }).catch(error => {
           // User doesn't exist (409?) / auth error (401)
-          vm.error_message = error.response.error || error.message
+          vm.error_message = (error.response ? error.response.error : error.message) || "Failed to login"
         })
       },
 
       register: function() {
         let vm = this
-        axios.post(config.baseURL + "user/signup", {
+        axios.post(this.API.tenanted("user/signup"), {
           user: this.username,
           password: md5(this.password)
         }).then(response => {

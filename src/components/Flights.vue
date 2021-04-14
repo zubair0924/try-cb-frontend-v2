@@ -6,7 +6,13 @@
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">From</span>
         </div>
-        <input v-model="from_airport" @input="from_update" type="text" list="from_airports" class="form-control" placeholder="Locations loaded with timeout" aria-describedby="basic-addon1">
+        <input v-model="from_airport"
+               @input="from_update"
+               type="text"
+               list="from_airports"
+               class="form-control"
+               placeholder="E.g. San Francisco Intl, SFO"
+               aria-describedby="basic-addon1">
         <!-- Dynamic autocompletions from couchbase query -->
         <datalist id="from_airports">
           <option v-for="(airport, index) in from_suggest" :key="index" :value="airport">
@@ -18,9 +24,15 @@
       <!-- Flight to destination -->
       <div class="input-group col-sm">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">To</span>
+          <span class="input-group-text" id="basic-addon2">To</span>
         </div>
-        <input v-model="to_airport" @input="to_update" type="text" list="to_airports" class="form-control" placeholder="Locations loaded with timeout" aria-describedby="basic-addon1">
+        <input v-model="to_airport"
+               @input="to_update"
+               type="text"
+               list="to_airports"
+               class="form-control"
+               placeholder="E.g. Los Angeles Intl, LAX"
+               aria-describedby="basic-addon2">
         <!-- Dynamic autocompletions from couchbase query -->
         <datalist id="to_airports">
           <option v-for="(airport, index) in to_suggest" :key="index" :value="airport">
@@ -96,8 +108,6 @@
 
 <script>
 import axios from 'axios'
-import Vue from 'vue'
-import { config } from '../main.js'
 
 let from_suggest = []
 let to_suggest = []
@@ -111,17 +121,18 @@ function getAirports(fromTo, resultList, vm){
   if(query == ""){
     return
   }
-  axios.get(config.baseURL + 'airports?search=' + query)
+  axios.get(vm.API.shared(`airports?search=${ query }`))
     .then(response => {
       // Emit an event to log the request's context to the context component
       vm.$emit('logCtx',[`Searched for airports matching "${query}"`, ...response.data.context])
-      
+
       // Unless the search term has already changed...
       if (vm[fromTo] != query) return
+
       // Replace the content of the supplied list with the result
       resultList.length = 0
       let results = response.data.data.slice(0,10);
-      results.map(r => resultList.push(r.airportname));
+      results.map(r => resultList.push(r.airportname))
     })
 }
 
@@ -134,14 +145,15 @@ function US_date(ISO_Date){
 }
 
 // Gets displays search results
-function searchFlights(from, to, leave, rturn, vm){
+function searchFlights(from, to, leave, rturn, vm) {
   out_results.length = 0
   in_results.length = 0
   vm.booked.length = 0
   console.log(vm.booked)
   // If there's a leave date, query the API for flights
-  if(!leave) return
-  axios.get(config.baseURL + `flightPaths/${ from }/${ to }?leave=` + US_date(leave))
+  if (!leave) return
+
+  axios.get(vm.API.shared(`flightPaths/${ from }/${ to }?leave=${ US_date(leave)}`))
     .then(response => {
       // Add the date to all the flights
       let flights = response.data.data
@@ -150,9 +162,11 @@ function searchFlights(from, to, leave, rturn, vm){
       // Emit an event to log the request's context to the context component
       vm.$emit('logCtx',["Queried for outbound flights", ...response.data.context])
     })
+
   // If there's also a return date, query the API again for return flights
   if(!rturn) return
-  axios.get(config.baseURL + `flightPaths/${ to }/${ from }?leave=` + US_date(rturn))
+
+  axios.get(vm.API.shared(`flightPaths/${ to }/${ from }?leave=${ US_date(rturn) }`))
     .then(response => {
       let flights = response.data.data
       flights.forEach((v,i,l) => l[i].date = US_date(rturn))
@@ -162,9 +176,9 @@ function searchFlights(from, to, leave, rturn, vm){
     })
 }
 
-
 export default {
   name: "flights",
+  inject: ['API'],
   data() {
     return {
       // Text input values
@@ -195,7 +209,7 @@ export default {
     },
     // Gets and displays the search results
     search_flights: function() {
-      searchFlights(this.from_airport, this.to_airport, this.leave_date, this.return_date, this) 
+      searchFlights(this.from_airport, this.to_airport, this.leave_date, this.return_date, this)
     },
     addToBasket: function(index, list, ref) {
       let flight = list[index]
