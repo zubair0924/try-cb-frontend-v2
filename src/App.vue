@@ -43,7 +43,7 @@
   import Booked  from './components/Booked.vue'
   import Hotels  from './components/Hotels.vue'
 
-export default {
+  export default {
     name: 'app',
     head: function () {
       return {

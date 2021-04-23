@@ -22,7 +22,6 @@
 
 <script>
 import axios from 'axios'
-import {config, tenantedAPI} from '../main.js'
 
 export default {
   name: "booked",
