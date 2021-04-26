@@ -9,6 +9,9 @@ EXPOSE 8081
 
 COPY . .
 
+RUN npm install
+RUN npm install @vue/cli-service
+
 # Set the default command to execute
 CMD npm run serve
 
