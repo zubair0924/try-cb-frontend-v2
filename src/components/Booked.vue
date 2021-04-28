@@ -50,7 +50,7 @@ export default {
           // TODO: Display ... something?
         }
         // Emit an event to log the request's context to the context component
-        vm.$emit('logCtx',["Updated booked flights lists", response.data.context])
+        vm.$emit('logCtx',["Retrieved booked flights lists from server", response.data.context])
       })
     }
   }

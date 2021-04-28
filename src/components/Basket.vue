@@ -14,7 +14,7 @@
         </div>
 
         <!-- Results table generated from basket passed in from parent component -->
-				<b-table class="mt-3" :items="this.$attrs.basket" :fields="fields">
+				<b-table class="mt-3" :items="this.$attrs.basket" :fields="fields" @update="update">
 					<!-- Composite field to show flightpath as one item -->
 					<template v-slot:cell(flightpath)="data">
 						{{data.item.sourceairport}} -> {{data.item.destinationairport}}
@@ -49,6 +49,14 @@ export default {
     }
   },
   methods: {
+    // Triggered on reopening the Basket tab
+    // As there is no synchronisation work to do with backend,
+    // we simply emit some Query Details
+    update: async function(){
+      console.log("wibble")
+      this.$emit('logCtx', ["Display basket details", "Frontend data managed by Vue"])
+    },
+
     // Removes a flight from the user's basket and adds it to their booked flights
     buy: function(index){
       let vm = this
@@ -68,6 +76,7 @@ export default {
     // Removes a flight from the user's basket
     cancel: function(item, index){
       this.$attrs.basket.pop(index)
+      this.$emit('logCtx',["Removed item from basket", "Frontend data managed by Vue"])
     }
   }
 }

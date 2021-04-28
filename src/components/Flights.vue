@@ -216,6 +216,7 @@ export default {
       this.$attrs.basket.push(flight)
       this.booked.push(ref)
       console.log(this.booked)
+      this.$emit('logCtx', ["Added flight to basket", "Frontend data managed by Vue"])
     },
     isInBasket: function(classRef) {
       return this.booked.indexOf(classRef) > -1

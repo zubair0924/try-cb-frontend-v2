@@ -18,8 +18,8 @@
           <Flights :user="{username, token}" :basket="basket" @logCtx="logCtx"/>
         </b-tab>
 
-        <b-tab title="Basket" :disabled="!token">
-          <Basket :user="{username, token}" :basket="basket" @logCtx="logCtx"/>
+        <b-tab title="Basket" :disabled="!token" @click="$refs.basket.update()">
+          <Basket :user="{username, token}" ref="basket" :basket="basket" @logCtx="logCtx"/>
         </b-tab>
 
         <b-tab title="Booked" :disabled="!token" @click="$refs.booked.update()">
@@ -102,6 +102,7 @@
         this.basket = []
         this.tabIndex = 0
         this.firstTab = 'Login'
+        this.logCtx(['Logged out', 'Front-end discarded authentication token'])
       },
       // Log messages to the context component
       logCtx(ctx){

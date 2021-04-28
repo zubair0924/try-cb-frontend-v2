@@ -83,7 +83,7 @@ export default {
             user: this.username
           })
           // Emit an event to log the request's context to the context component
-          this.$emit('logCtx',["Authenticated with server; Retrieved token",response.data.context])
+          this.$emit('logCtx', ["Authenticated with server; Retrieved token", response.data.context])
         }).catch(error => {
           // User doesn't exist (409?) / auth error (401)
           vm.error_message = (error.response ? error.response.error : error.message) || "Failed to login"
