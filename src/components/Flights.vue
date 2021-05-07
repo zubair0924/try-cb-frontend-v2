@@ -107,7 +107,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 let from_suggest = []
 let to_suggest = []
@@ -121,7 +120,7 @@ function getAirports(fromTo, resultList, vm){
   if(query == ""){
     return
   }
-  axios.get(vm.API.shared(`airports?search=${ query }`))
+  vm.API.callShared('GET', `airports?search=${ query }`)
     .then(response => {
       // Emit an event to log the request's context to the context component
       vm.$emit('logCtx',[`Searched for airports matching "${query}"`, ...response.data.context])
@@ -153,7 +152,7 @@ function searchFlights(from, to, leave, rturn, vm) {
   // If there's a leave date, query the API for flights
   if (!leave) return
 
-  axios.get(vm.API.shared(`flightPaths/${ from }/${ to }?leave=${ US_date(leave)}`))
+  vm.API.callShared('GET', `flightPaths/${ from }/${ to }?leave=${ US_date(leave)}`)
     .then(response => {
       // Add the date to all the flights
       let flights = response.data.data
@@ -166,7 +165,7 @@ function searchFlights(from, to, leave, rturn, vm) {
   // If there's also a return date, query the API again for return flights
   if(!rturn) return
 
-  axios.get(vm.API.shared(`flightPaths/${ to }/${ from }?leave=${ US_date(rturn) }`))
+  vm.API.callShared('GET', `flightPaths/${ to }/${ from }?leave=${ US_date(rturn) }`)
     .then(response => {
       let flights = response.data.data
       flights.forEach((v,i,l) => l[i].date = US_date(rturn))

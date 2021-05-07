@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   name: "basket",
@@ -53,14 +52,13 @@ export default {
     // As there is no synchronisation work to do with backend,
     // we simply emit some Query Details
     update: async function(){
-      console.log("wibble")
       this.$emit('logCtx', ["Display basket details", "Frontend data managed by Vue"])
     },
 
     // Removes a flight from the user's basket and adds it to their booked flights
     buy: function(index){
       let vm = this
-      axios.put(this.API.tenanted(`user/${ this.$attrs.user.username }/flights`), {
+      this.API.callTenanted('PUT', `user/${ this.$attrs.user.username }/flights`, {
         flights: [this.$attrs.basket.splice(index, 1)[0]]
       },{
         // JWT token supplied to authorize user

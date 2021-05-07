@@ -1,13 +1,10 @@
 <template>
   <div id="app container">
-
-    <!-- Context Component displays logs for all the database actions performed -->
-    <Context ref="ctx"/>
-    <!-- Tab for each section of the app.
-    Each tab contains one Vue Component which comprises that 'page' of the app.
-    These components are stored in their corresponding files (e.g: Flights.vue)
-    -->
     <div class="container">
+      <!-- Tab for each section of the app.
+      Each tab contains one Vue Component which comprises that 'page' of the app.
+      These components are stored in their corresponding files (e.g: Flights.vue)
+      -->
       <b-tabs  v-model="tabIndex">
 
         <b-tab :title="firstTab" @click="logout">
@@ -32,6 +29,10 @@
 
       </b-tabs>
     </div>
+
+    <!-- Context Component displays logs for all the database actions performed -->
+    <Context ref="ctx"/>
+
   </div>
 </template>
 
@@ -42,6 +43,7 @@
   import Basket  from './components/Basket.vue'
   import Booked  from './components/Booked.vue'
   import Hotels  from './components/Hotels.vue'
+  import axios from 'axios'
 
   export default {
     name: 'app',
@@ -71,8 +73,10 @@
       return {
         tenantInfo: this.tenantInfo,
         API: {
-          tenanted: (path) => `${ this.config.baseURL }/tenants/${ this.tenantId }/${ path }`,
-          shared:   (path) => `${ this.config.baseURL }/${ path }`
+          tenanted: (path) => `${ this.config.baseURL }${ this.tenanted(path) }`,
+          shared:   (path) => `${ this.config.baseURL }${ this.shared(path) }`,
+          callShared: (method, path, ...args)   => this.call(method, this.shared(path), ...args),
+          callTenanted: (method, path, ...args) => this.call(method, this.tenanted(path), ...args),
         }
       }
     },
@@ -87,6 +91,32 @@
       }
     },
     methods: {
+      call: function (method, path, ...args) {
+        const url = `${ this.config.baseURL }${ path }`
+
+        this.logCtx([`${ method } ${ path }`, `REST ${ method } to ${ url }`])
+        const req = {
+          'POST': axios.post,
+          'GET': axios.get,
+          'PUT': axios.put,
+        }[method];
+
+        return req(url, ...args)
+          .catch(err => {
+            const response = err.response
+            this.logCtx([`... ${ response.status } from ${ path }`])
+            throw response
+          })
+          .then(response => {
+            this.logCtx([`... ${ response.status } from ${ path }`])
+            return response
+          })
+      },
+      shared: (path) => `/${path}`,
+      tenanted: function (path) {
+        return `/tenants/${ this.tenantId }/${ path }`
+      },
+
       // Store the username and token, and advance into the app
       // Also changes the first tab to a logout button
       login: function (vals){

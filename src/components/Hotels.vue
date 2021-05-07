@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   name: "hotels",
@@ -56,7 +55,7 @@ export default {
     search: async function(){
       let vm = this
       // Search arguments are the user-supplied terms or '*', for match anything
-      axios.get(this.API.shared(`hotels/${ this.desc || '*' }/${ this.location || '*' }/`))
+      this.API.callShared('GET', `hotels/${ this.desc || '*' }/${ this.location || '*' }/`)
         .then(response => {
           vm.hotels.length = 0
           vm.hotels.push(...response.data.data)

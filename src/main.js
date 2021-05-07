@@ -11,6 +11,8 @@ Vue.use(VueRouter)
 Vue.use(VueHead)
 Vue.use(BootstrapVue)
 Vue.config.productionTip = false
+import { VBTogglePlugin } from 'bootstrap-vue'
+Vue.use(VBTogglePlugin)
 
 
 const config = {

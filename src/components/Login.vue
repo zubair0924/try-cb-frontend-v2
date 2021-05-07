@@ -58,7 +58,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   name: "login",
@@ -73,7 +72,7 @@ export default {
   methods: {
       login: function() {
         let vm = this // Store a reference to the Vue object for use inside callbacks
-        axios.post(this.API.tenanted("user/login"), {
+        this.API.callTenanted('POST', "user/login", {
           user: this.username,
           password: md5(this.password)
         }).then(response => {
@@ -92,7 +91,7 @@ export default {
 
       register: function() {
         let vm = this
-        axios.post(this.API.tenanted("user/signup"), {
+        this.API.callTenanted('POST', "user/signup", {
           user: this.username,
           password: md5(this.password)
         }).then(response => {

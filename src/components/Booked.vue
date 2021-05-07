@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   name: "booked",
@@ -39,7 +38,7 @@ export default {
     update: async function(){
       let vm = this
       console.log("updating...")
-      axios.get(this.API.tenanted(`user/${ this.$attrs.user.username }/flights`),{
+      this.API.callTenanted('GET', `user/${ this.$attrs.user.username }/flights`,{
         // JWT token supplied to authorize user
         headers: {'Authorization': "Bearer " + this.$attrs.user.token}
       }).then(response => {
