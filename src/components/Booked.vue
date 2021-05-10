@@ -5,7 +5,7 @@
         <!-- Nothing booked message -->
         <div class="alert alert-primary" v-if="booked.length == 0">
           <p><strong>You haven't purchased any flights yet!</strong></p>
-          <p class="mb-0">Try purchasing some from your basket</p>
+          <p class="mb-0">Try purchasing some from your cart</p>
         </div>
 
         <!-- Results table, generated from :items data -->

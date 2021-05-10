@@ -7,16 +7,12 @@
       -->
       <b-tabs  v-model="tabIndex">
 
-        <b-tab :title="firstTab" @click="logout">
-          <Login v-on:login="login" v-on:logCtx="logCtx"/>
-        </b-tab>
-
         <b-tab title="Flights">
-          <Flights :user="{username, token}" :basket="basket" @logCtx="logCtx"/>
+          <Flights :user="{username, token}" :cart="cart" @logCtx="logCtx"/>
         </b-tab>
 
-        <b-tab title="Basket" :disabled="!token" @click="$refs.basket.update()">
-          <Basket :user="{username, token}" ref="basket" :basket="basket" @logCtx="logCtx"/>
+        <b-tab :title="cartTab" :disabled="!token" @click="$refs.cart.update()">
+          <Cart :user="{username, token}" ref="cart" :cart="cart" @logCtx="logCtx"/>
         </b-tab>
 
         <b-tab title="Booked" :disabled="!token" @click="$refs.booked.update()">
@@ -25,6 +21,10 @@
 
         <b-tab title="Hotels">
           <Hotels @logCtx="logCtx"/>
+        </b-tab>
+
+        <b-tab :title="firstTab" @click="logout" title-item-class="ml-auto">
+          <Login v-on:login="login" v-on:logCtx="logCtx"/>
         </b-tab>
 
       </b-tabs>
@@ -40,7 +40,7 @@
   import Context from './components/Context.vue'
   import Login   from './components/Login.vue'
   import Flights from './components/Flights.vue'
-  import Basket  from './components/Basket.vue'
+  import Cart  from './components/Cart.vue'
   import Booked  from './components/Booked.vue'
   import Hotels  from './components/Hotels.vue'
   import axios from 'axios'
@@ -58,7 +58,7 @@
       Context,
       Login,
       Flights,
-      Basket,
+      Cart,
       Booked,
       Hotels
     },
@@ -67,14 +67,16 @@
     },
     computed: {
       tenantId() { return this.$route.params.tenant_id },
-      tenantInfo() { return this.config.tenants[this.tenantId] }
+      tenantInfo() { return this.config.tenants[this.tenantId] },
+      cartTab() {
+        const count = this.cart.length
+        return count ? `Cart (${ count })` : "Cart"
+      },
     },
     provide() {
       return {
         tenantInfo: this.tenantInfo,
         API: {
-          tenanted: (path) => `${ this.config.baseURL }${ this.tenanted(path) }`,
-          shared:   (path) => `${ this.config.baseURL }${ this.shared(path) }`,
           callShared: (method, path, ...args)   => this.call(method, this.shared(path), ...args),
           callTenanted: (method, path, ...args) => this.call(method, this.tenanted(path), ...args),
         }
@@ -84,8 +86,8 @@
       return {
         token: undefined,     // The JWT auth token
         username: undefined,  // The user's ID
-        basket: [],           // The user's basket
-        tabIndex: 0,          // The tab of the app that's currently open
+        cart: [],           // The user's cart
+        tabIndex: 4,          // The tab of the app that's currently open
         firstTab: 'Login',    // The text for the first tab (Login/Logout)
         context: []           // The logs and debug data from the back-end
       }
@@ -122,15 +124,15 @@
       login: function (vals){
         this.token = vals.token
         this.username = vals.user
-        this.tabIndex = 1
+        this.tabIndex = 0
         this.firstTab = 'Logout'
       },
       // Reset the stored user data & return to login page
       logout: function (){
         this.token = undefined
         this.username = undefined
-        this.basket = []
-        this.tabIndex = 0
+        this.cart = []
+        this.tabIndex = 4
         this.firstTab = 'Login'
         this.logCtx(['Logged out', 'Front-end discarded authentication token'])
       },

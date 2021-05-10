@@ -80,9 +80,9 @@
       <!-- Embed HTML in the table row for book buttons -->
       <template v-slot:cell(actions)="row">
         <button class="btn btn-primary btn-sm mr-3"
-                @click="addToBasket(row.index, out_results, 'outBtn-' + row.index)"
-                :disabled="!$attrs.user.token || isInBasket('outBtn-' + row.index)">
-          <strong>Add to basket</strong>
+                @click="addToCart(row.index, out_results, 'outBtn-' + row.index)"
+                :disabled="!$attrs.user.token || isInCart('outBtn-' + row.index)">
+          <strong>Add to cart</strong>
         </button>
       </template>
     </b-table>
@@ -96,9 +96,9 @@
       <!-- Embed HTML in the table row for book buttons -->
       <template v-slot:cell(actions)="row">
         <button class="btn btn-primary btn-sm mr-3"
-                @click="addToBasket(row.index, in_results, 'rtnBtn-' + row.index)"
-                :disabled="!$attrs.user.token || isInBasket('rtnBtn-' + row.index)">
-          <strong>Add to basket</strong>
+                @click="addToCart(row.index, in_results, 'rtnBtn-' + row.index)"
+                :disabled="!$attrs.user.token || isInCart('rtnBtn-' + row.index)">
+          <strong>Add to cart</strong>
         </button>
       </template>
     </b-table>
@@ -210,14 +210,14 @@ export default {
     search_flights: function() {
       searchFlights(this.from_airport, this.to_airport, this.leave_date, this.return_date, this)
     },
-    addToBasket: function(index, list, ref) {
+    addToCart: function(index, list, ref) {
       let flight = list[index]
-      this.$attrs.basket.push(flight)
+      this.$attrs.cart.push(flight)
       this.booked.push(ref)
       console.log(this.booked)
-      this.$emit('logCtx', ["Added flight to basket", "Frontend data managed by Vue"])
+      this.$emit('logCtx', ["Added flight to cart", "Frontend data managed by Vue"])
     },
-    isInBasket: function(classRef) {
+    isInCart: function(classRef) {
       return this.booked.indexOf(classRef) > -1
     },
     isAirportCode: function(term) {
