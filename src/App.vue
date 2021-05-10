@@ -19,7 +19,7 @@
           <Booked :user="{username, token}" ref="booked" @logCtx="logCtx"/>
         </b-tab>
 
-        <b-tab title="Hotels">
+        <b-tab title="Hotels" title-item-class="ml-3">
           <Hotels @logCtx="logCtx"/>
         </b-tab>
 
