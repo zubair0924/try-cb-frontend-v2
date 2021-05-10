@@ -96,7 +96,7 @@
       call: function (method, path, ...args) {
         const url = `${ this.config.baseURL }${ path }`
 
-        this.logCtx([`${ method } ${ path }`, `REST ${ method } to ${ url }`])
+        this.logCtx([`${ method } ${ path }`, `${ method } to ${ url }`])
         const req = {
           'POST': axios.post,
           'GET': axios.get,
