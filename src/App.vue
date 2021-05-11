@@ -5,7 +5,7 @@
       Each tab contains one Vue Component which comprises that 'page' of the app.
       These components are stored in their corresponding files (e.g: Flights.vue)
       -->
-      <b-tabs  v-model="tabIndex">
+      <b-tabs  v-model="tabIndex" nav-wrapper-class="mb-5">
 
         <b-tab title="Flights">
           <Flights :user="{username, token}" :cart="cart" @logCtx="logCtx"/>
@@ -23,7 +23,7 @@
           <Hotels @logCtx="logCtx"/>
         </b-tab>
 
-        <b-tab :title="firstTab" @click="logout" title-item-class="ml-auto">
+        <b-tab :title="loginTab" @click="logout" title-item-class="ml-auto">
           <Login v-on:login="login" v-on:logCtx="logCtx"/>
         </b-tab>
 
@@ -72,6 +72,7 @@
         const count = this.cart.length
         return count ? `Cart (${ count })` : "Cart"
       },
+      loginTab() { return this.username ? `Logout (${ this.username })` : "Login" },
     },
     provide() {
       return {
@@ -88,7 +89,6 @@
         username: undefined,  // The user's ID
         cart: [],           // The user's cart
         tabIndex: 4,          // The tab of the app that's currently open
-        firstTab: 'Login',    // The text for the first tab (Login/Logout)
         context: []           // The logs and debug data from the back-end
       }
     },
@@ -96,7 +96,7 @@
       call: function (method, path, ...args) {
         const url = `${ this.config.baseURL }${ path }`
 
-        this.logCtx([`${ method } ${ path }`, `${ method } to ${ url }`])
+        this.logCtx([`➤ ${ method } ${ path }`, `${ method } to ${ url }`])
         const req = {
           'POST': axios.post,
           'GET': axios.get,
@@ -106,11 +106,11 @@
         return req(url, ...args)
           .catch(err => {
             const response = err.response
-            this.logCtx([`... ${ response.status } from ${ path }`])
+            this.logCtx([`✘ ${ response.status } from ${ path }`])
             throw response
           })
           .then(response => {
-            this.logCtx([`... ${ response.status } from ${ path }`])
+            this.logCtx([`✔️ ${ response.status } from ${ path }`])
             return response
           })
       },
@@ -120,12 +120,10 @@
       },
 
       // Store the username and token, and advance into the app
-      // Also changes the first tab to a logout button
       login: function (vals){
         this.token = vals.token
         this.username = vals.user
         this.tabIndex = 0
-        this.firstTab = 'Logout'
       },
       // Reset the stored user data & return to login page
       logout: function (){
@@ -133,7 +131,6 @@
         this.username = undefined
         this.cart = []
         this.tabIndex = 4
-        this.firstTab = 'Login'
         this.logCtx(['Logged out', 'Front-end discarded authentication token'])
       },
       // Log messages to the context component

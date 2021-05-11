@@ -5,8 +5,8 @@
         <b-button block v-b-toggle.context-accordion variant="primary">
           <div class="row">
             <div class="col text-left">
-              <span class="when-open">-</span>
-              <span class="when-closed">+</span>
+              <span class="when-open">▽</span>
+              <span class="when-closed">▷</span>
               {{ latestCtx.message }}
             </div>
             <div class="col text-right">
@@ -66,7 +66,6 @@
   .log-line:not(:last-child) {
     color: lightgrey;
   }
-
 </style>
 
 <script>
