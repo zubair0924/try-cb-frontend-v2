@@ -133,6 +133,7 @@ function getAirports(fromTo, resultList, vm){
       let results = response.data.data.slice(0,10);
       results.map(r => resultList.push(r.airportname))
     })
+    .catch(err => {})
 }
 
 // Converts from ISO date from the HTML input to US date used by the internal API

@@ -104,14 +104,21 @@
         }[method];
 
         return req(url, ...args)
+          .then(response => {
+              this.logCtx([`✔️ ${ response.status } from ${ path }`])
+              return response
+            })
           .catch(err => {
             const response = err.response
-            this.logCtx([`✘ ${ response.status } from ${ path }`])
-            throw response
-          })
-          .then(response => {
-            this.logCtx([`✔️ ${ response.status } from ${ path }`])
-            return response
+            if (response) {
+              this.logCtx(
+                [`✘ ${ response.status } from ${ path }`,
+                JSON.stringify(response.data.error),
+                ...response.data.context || []])
+            } else {
+              this.logCtx([`✘ NO RESPONSE (backend unresponsive?) from ${ path }`])
+            }
+            throw(err)
           })
       },
       shared: (path) => `/${path}`,

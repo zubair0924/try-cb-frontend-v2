@@ -71,8 +71,11 @@
 <script>
 
 function formatN1QL(n1ql){
-  console.log(n1ql)
-  return n1ql.replace(/ ([A-Z]{4,})/g, (match, p1) => "\n" + p1)
+  return n1ql.toString()
+    .replace(/ +(ON KEYS|AND|SELECT|WHERE|UNION|FROM|UNNEST|JOIN|ORDER BY)/g,
+            (match, p1) => "\n" + p1)
+    .replace(/\n+/g, "\n")
+
 }
 
 export default {
@@ -109,7 +112,10 @@ export default {
     showMessage: t => `• ${ t.message }\n`,
     scrollLog() {
       setTimeout(() => {
-        this.$refs['log'].scrollTop = this.$refs['log'].scrollHeight
+        var log = this.$refs.log
+        if (log) {
+          log.scrollTop = log.scrollHeight
+        }
       }, 50)
     }
   }
