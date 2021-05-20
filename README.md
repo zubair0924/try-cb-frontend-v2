@@ -14,7 +14,7 @@ We recommend running from the perspective of one of the backends: this will buil
 couchbase database, and the frontend.
 The following backends are currently available, we intend to provide one for each SDK:
 
- * [Python](https://github.com/maria-robobug/try-cb-python/tree/DOC-8136)
+ * [Python](https://github.com/couchbaselabs/try-cb-python/)
 
  ### Build with docker
 
@@ -45,5 +45,5 @@ If you prefer not to use docker, you can run the backend and/or couchbase server
 One useful case is running the db locally, and passing its IP address directly to the backend:
 
     # example only, use the IP address of your locally running db server
-    ARGS="-c 10.144.211.101" docker-compose up backend
+    CB_HOST=10.144.211.101 docker-compose up backend
 

@@ -1,20 +1,16 @@
 # Set the base image to Node
-FROM node
+FROM node:15-buster-slim
 
-# File Author / Maintainer
-MAINTAINER Couchbase
+LABEL maintainer="Couchbase"
 
-# Expose ports
 EXPOSE 8081
 
 COPY . .
 
+RUN apt-get update
+RUN apt-get install wait-for-it
+
 RUN npm install
 RUN npm install @vue/cli-service
 
-# Set the default command to execute
 CMD npm run serve
-
-# try:
-#    docker build -t frontend .
-#    docker run -it -p8081:8081 frontend
