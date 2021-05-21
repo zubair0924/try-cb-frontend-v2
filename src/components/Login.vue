@@ -31,23 +31,21 @@
         </div>
       </div>
       <!-- Info column -->
-      <div class="col-sm">
-        <h1>CBTravel <img src="assets/CBTravel.LOGO.png" alt="CBTravel Logo"></h1>
+      <div class="col-sm container">
+        <h1> {{ this.tenantInfo.name }} <img :src="this.tenantInfo.logo" alt="Logo"></h1>
         <p>This is a sample app to demonstrate some of the things Couchbase can do. Create an account, book flights and search hotels while the app displays what's going on behind the scenes.</p>
-        <p>You can find documentation for this app <a href="https://docs.couchbase.com/server/4.5/travel-app/travel-app-walkthough.html" target="_blank">here</a>, and docs for each SDK backend below:</p>
+        <p>You can find documentation for this app at the appropriate page for your preferred SDK:</p>
 
-        <table class="table">
-          <tr>
-            <td class="text-center"><a href="https://docs.couchbase.com/java-sdk/current/sample-app-backend.html" target="_blank">Java</a></td>
-            <td class="text-center"><a href="https://docs.couchbase.com/python-sdk/current/sample-app-backend.html" target="_blank">Python</a></td>
-            <td class="text-center"><a href="https://docs.couchbase.com/nodejs-sdk/current/sample-app-backend.html" target="_blank">Javascript</a></td>
-          </tr>
-          <tr>
-            <td class="text-center"><a href="https://docs.couchbase.com/dotnet-sdk/current/sample-app-backend.html" target="_blank">.NET</a></td>
-            <td class="text-center"><a href="https://docs.couchbase.com/go-sdk/current/sample-app-backend.html" target="_blank">Go</a></td>
-            <td class="text-center"><a href="https://docs.couchbase.com/php-sdk/current/sample-app-backend.html" target="_blank">PHP</a></td>
-          </tr>
-        </table>
+        <ul class="row list-unstyled">
+          <li class="col-4 text-center p-2"><a href="https://docs.couchbase.com/python-sdk/current/sample-app-backend.html" target="_blank">Python</a></li>
+          <li class="col-4 text-center p-2"><a href="https://docs.couchbase.com/java-sdk/current/sample-app-backend.html" target="_blank">Java</a></li>
+          <li class="col-4 text-center p-2"><a href="https://docs.couchbase.com/nodejs-sdk/current/sample-app-backend.html" target="_blank">Javascript</a></li>
+          <li class="col-4 text-center p-2"><a href="https://docs.couchbase.com/dotnet-sdk/current/sample-app-backend.html" target="_blank">.NET</a></li>
+          <li class="col-4 text-center p-2"><a href="https://docs.couchbase.com/go-sdk/current/sample-app-backend.html" target="_blank">Go</a></li>
+          <li class="col-4 text-center p-2"><a href="https://docs.couchbase.com/php-sdk/current/sample-app-backend.html" target="_blank">PHP</a></li>
+          <li class="col-4 text-center p-2"><a href="https://docs.couchbase.com/scala-sdk/current/sample-app-backend.html" target="_blank">Scala</a></li>
+          <li class="col-4 text-center p-2"><a href="https://docs.couchbase.com/ruby-sdk/current/sample-app-backend.html" target="_blank">Ruby</a></li>
+        </ul>
 
         <!-- <div class="row mt-auto mx-auto text-center h-auto">
           <div class="col">
@@ -60,12 +58,10 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { setTimeout } from 'timers';
-import { config } from '../main.js'
 
 export default {
   name: "login",
+  inject: ['API', 'tenantInfo'],
   data() {
     return {
       username: '',
@@ -76,7 +72,7 @@ export default {
   methods: {
       login: function() {
         let vm = this // Store a reference to the Vue object for use inside callbacks
-        axios.post(config.baseURL + "user/login", {
+        this.API.callTenanted('POST', "user/login", {
           user: this.username,
           password: md5(this.password)
         }).then(response => {
@@ -86,16 +82,16 @@ export default {
             user: this.username
           })
           // Emit an event to log the request's context to the context component
-          this.$emit('logCtx',["Authenticated with server; Retrieved token",response.data.context])
+          this.$emit('logCtx', ["Authenticated with server; Retrieved token", response.data.context])
         }).catch(error => {
           // User doesn't exist (409?) / auth error (401)
-          vm.error_message = error.response.error || error.message
+          vm.error_message = (error.response ? error.response.error : error.message) || "Failed to login"
         })
       },
 
       register: function() {
         let vm = this
-        axios.post(config.baseURL + "user/signup", {
+        this.API.callTenanted('POST', "user/signup", {
           user: this.username,
           password: md5(this.password)
         }).then(response => {

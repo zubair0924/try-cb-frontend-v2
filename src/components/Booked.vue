@@ -5,7 +5,7 @@
         <!-- Nothing booked message -->
         <div class="alert alert-primary" v-if="booked.length == 0">
           <p><strong>You haven't purchased any flights yet!</strong></p>
-          <p class="mb-0">Try purchasing some from your basket</p>
+          <p class="mb-0">Try purchasing some from your cart</p>
         </div>
 
         <!-- Results table, generated from :items data -->
@@ -21,11 +21,10 @@
 </template>
 
 <script>
-import axios from 'axios'
-import {config} from '../main.js'
 
 export default {
   name: "booked",
+  inject: ['API'],
   data() {
     return {
       // The fields and data for the Booked flights table
@@ -39,7 +38,7 @@ export default {
     update: async function(){
       let vm = this
       console.log("updating...")
-      axios.get(config.baseURL + `user/${ this.$attrs.user.username }/flights`,{
+      this.API.callTenanted('GET', `user/${ this.$attrs.user.username }/flights`,{
         // JWT token supplied to authorize user
         headers: {'Authorization': "Bearer " + this.$attrs.user.token}
       }).then(response => {
@@ -50,7 +49,7 @@ export default {
           // TODO: Display ... something?
         }
         // Emit an event to log the request's context to the context component
-        vm.$emit('logCtx',["Updated booked flights lists", response.data.context])
+        vm.$emit('logCtx',["Retrieved booked flights lists from server", response.data.context])
       })
     }
   }

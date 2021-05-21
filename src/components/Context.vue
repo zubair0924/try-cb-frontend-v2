@@ -1,38 +1,100 @@
 <template>
-  <div class="container">
-    <div class="row mt-3 mb-4">
-      <!-- Traditional log section, lists messages sequentially -->
-      <div class="col-lg-7">
-        <h3 class="ml-1">Query Log</h3>
-        <!-- linebreaks inside tags are to prevent line breaks within the pre element -->
-        <pre class="pre-scrollable m-1 p-1 h-100 bg-dark" style="height:200px !important" ref="log"
-          ><code class="text-light"
-            ><span v-for="(t,index) in ctx" :key="index" @click="(showExtra(index))" :class="{'font-weight-bold': (extraIndex === index)}">{{t.message}}
-</span></code></pre>
-      </div>
-      <!-- Detail pane - Click on a log message to display details here (if there are any) -->
-      <div class="col-lg-5">
-        <h3 class="ml-1">Query Details</h3>
-        <pre class="pre-scrollable m-1 p-1 h-100 bg-dark" style="height:200px !important"><code class="text-light"
-          >{{extraIndex !== undefined ? ctx[extraIndex].extra : ''}}</code></pre>
-      </div>
-    </div>
+  <div class="accordion w-100 m-0" role="tablist">
+    <b-card no-body class="m-0 bg-canary">
+      <b-card-header header-tag="header" role="tab" class="p-0">
+        <b-button block v-b-toggle.context-accordion variant="primary">
+          <div class="row">
+            <div class="col text-left">
+              <span class="when-open">▽</span>
+              <span class="when-closed">▷</span>
+              {{ latestCtx.message }}
+            </div>
+            <div class="col text-right">
+              <span class="when-closed font-italic">(click to view Couchbase details)</span>
+            </div>
+          </div>
+        </b-button>
+      </b-card-header>
+      <b-collapse id="context-accordion" class="container" accordion="context-accordion" role="tab-panel">
+        <div class="row mt-3 mb-4">
+          <!-- Traditional log section, lists messages sequentially -->
+          <div class="col">
+            <h3 class="ml-1">Query Log</h3>
+            <!-- linebreaks inside tags are to prevent line breaks within the pre element -->
+            <pre class="pre-scrollable m-1 ml-2 p-1 bg-dark"
+              ref="log"
+              ><code class="text-light"
+                ><span v-for="(t,index) in ctx"
+                  :key="index"
+                  class="log-line"
+              ><b>{{showMessage(t)}}</b>{{ t.extra ? t.extra + "\n" : '' }}</span></code></pre>
+          </div>
+
+        </div>
+      </b-collapse>
+    </b-card>
   </div>
 </template>
+
+<style scoped>
+  .accordion {
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+  }
+  /* canary yellow */
+  .bg-canary {
+    background-color: #FCF0AD;
+  }
+  .pre-scrollable {
+    height:200px !important;
+  }
+  .collapsed .when-open,
+  .not-collapsed .when-closed {
+      display: none;
+  }
+  .log-line {
+    margin-left: 2em;
+    display: block;
+  }
+  .log-line > b {
+    margin-left: -2em;
+    display: block;
+    margin-top: 0.5em;
+  }
+
+  .log-line:not(:last-child) {
+    color: lightgrey;
+  }
+</style>
 
 <script>
 
 function formatN1QL(n1ql){
-  console.log(n1ql)
-  return n1ql.replace(/ ([A-Z]{4,})/g, (match, p1) => "\n" + p1)
+  return n1ql.toString()
+    .replace(/ +(ON KEYS|AND|SELECT|WHERE|UNION|FROM|UNNEST|JOIN|ORDER BY)/g,
+            (match, p1) => "\n" + p1)
+    .replace(/\n+/g, "\n")
+
 }
 
 export default {
   data() {
     return {
-      ctx: [],
-      extraIndex: undefined
+      ctx: [ {message: "Started..."} ],
     }
+  },
+  mounted() {
+    this.$root.$on('bv::collapse::state', (_, isJustShown) => {
+      if (isJustShown) {
+        this.scrollLog()
+      }
+    })
+  },
+  computed: {
+    latestCtx: function () {
+      return this.ctx[this.ctx.length - 1]
+    },
   },
   methods: {
     logCtx(context){
@@ -41,21 +103,20 @@ export default {
       } else {
         console.log(context)
         this.ctx.push({
-          message: "• " + context[0],
+          message: context[0],
           extra: context.slice(1).map(formatN1QL).join('\n\n')
         })
       }
-      setTimeout(() => {
-        this.$refs['log'].scrollTop = this.$refs['log'].scrollHeight
-        this.showExtra(this.ctx.length - 1)
-        }, 50)
+      this.scrollLog()
     },
-    showExtra: function(x) {
-      if(this.ctx[x].extra){
-        this.extraIndex = x
-      } else {
-        this.extraIndex = undefined
-      }
+    showMessage: t => `• ${ t.message }\n`,
+    scrollLog() {
+      setTimeout(() => {
+        var log = this.$refs.log
+        if (log) {
+          log.scrollTop = log.scrollHeight
+        }
+      }, 50)
     }
   }
 }
