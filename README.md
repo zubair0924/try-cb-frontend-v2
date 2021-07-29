@@ -18,12 +18,10 @@ The following backends are currently available, we intend to provide one for eac
 
  * [Python](https://github.com/couchbaselabs/try-cb-python/)
  * [Node.js](https://github.com/couchbaselabs/try-cb-nodejs/)
-
- <!--
  * [Java](https://github.com/couchbaselabs/try-cb-java)
+ * [Scala](https://github.com/couchbaselabs/try-cb-scala)
  * [PHP](https://github.com/couchbaselabs/try-cb-php/)
  * [.Net](https://github.com/couchbaselabs/try-cb-dotnet/)
- -->
 
  ### Build with docker
 
