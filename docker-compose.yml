@@ -13,13 +13,13 @@ services:
       - CB_USER
       - CB_PSWD
     command: $CB_HOST $CB_USER $CB_PSWD
-    container_name: try-cb-api
+    container_name: fe-try-cb-api
 
   frontend:
     build: .
     ports:
       - 8081:8081
-    container_name: try-cb-fe
+    container_name: fe-try-cb-fe
     entrypoint: ["wait-for-it", "backend:8080", "--timeout=200", "--strict", "--", "npm", "run", "serve"]
     depends_on:
       backend:
@@ -38,4 +38,4 @@ services:
       interval: 20s
       timeout: 20s
       retries: 2
-    container_name: couchbase-sandbox-7.0.0
+    container_name: fe-couchbase-sandbox-7.0.0
