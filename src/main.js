@@ -16,7 +16,7 @@ Vue.use(VBTogglePlugin)
 
 
 const config = {
-  baseURL: 'http://localhost:8080/api',
+  baseURL: '/api',
   tenants: {
     'tenant_agent_00': {
       'name': 'CBTravel',
