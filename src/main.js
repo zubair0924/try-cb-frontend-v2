@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VueRouter from 'vue-router'
 import VueHead from 'vue-head'
+import { publicPath } from '../vue.config'
 
 
 Vue.use(VueRouter)
@@ -37,6 +38,7 @@ import Index from './Index.vue'
 
 const router = new VueRouter({
   mode: 'history',
+  base: publicPath,
 
   routes: [
     { path: '/',
