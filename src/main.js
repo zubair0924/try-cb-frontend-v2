@@ -38,7 +38,7 @@ import Index from './Index.vue'
 
 const router = new VueRouter({
   mode: 'history',
-  base: publicPath,
+  base: '/NodeApplication/',
 
   routes: [
     { path: '/',
